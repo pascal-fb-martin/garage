@@ -1,0 +1,21 @@
+{
+   "webport": 8080,
+   "doors": {
+      "main": {
+        "name": "Main Garage Door",
+        "control": {
+           "pin": "GPIOxx",
+           "on": "HIGH"
+        },
+        "open": {
+           "pin": "GPIOyy",
+           "on": "LOW"
+        },
+        "closed": {
+           "pin": "GPIOzz",
+           "on": "LOW"
+        }
+      }
+   }
+}
+
