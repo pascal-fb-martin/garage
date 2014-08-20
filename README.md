@@ -3,6 +3,8 @@ garage
 
 Garage door control with web user interface (for private network).
 
+_This software is alpha release. It has not yet been fully tested._
+
 This software is a Node.js application for Raspberry Pi or BeagleBone Black.
 It offers a web user interface and no software is required on the client side.
 
