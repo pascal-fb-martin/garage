@@ -45,7 +45,7 @@ and activate using the Debian's `insserv` command.
 
 ## Configuration
 
-The software is configured through a `config.json` file in dirctory
+The software is configured through a `config.json` file in directory
 `/var/lib/garage`. Here is a example of a configuration with two garage doors:
 
 ```
@@ -66,7 +66,7 @@ The software is configured through a `config.json` file in dirctory
            "pin": "gpio3",
            "on": "LOW"
         }
-      }
+      },
       "small": {
         "name": "Small Garage Door",
         "control": {
@@ -91,8 +91,8 @@ The `webport` item defines the TCP port number used by the web server.
 The `doors` item is a JavaScript object, in which each element is a door's
 description.
 
-A door description must contain three pin descriptions: `control`, `open`
-and `closed`. Each pin description is a JavaScript object with two elements:
-`pin` (the name of the GPIO pin, as defined on your system) and `on` (the
-value of the pin when active: `HIGH`, i.e. 5V, or `LOW`, i.e. 0V).
+A door description must contain a name and three pin descriptions: `control`,
+`open` and `closed`. Each pin description is a JavaScript object with two
+elements: `pin` (the name of the GPIO pin, as defined on your system) and
+`on` (the value of the pin when active: `HIGH`, i.e. 5V, or `LOW`, i.e. 0V).
 

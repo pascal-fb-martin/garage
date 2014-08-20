@@ -15,6 +15,21 @@
            "pin": "GPIOzz",
            "on": "LOW"
         }
+      },
+      "small": {
+        "name": "Small Garage Door",
+        "control": {
+           "pin": "GPIOuu",
+           "on": "HIGH"
+        },
+        "open": {
+           "pin": "GPIOvv",
+           "on": "LOW"
+        },
+        "closed": {
+           "pin": "GPIOww",
+           "on": "LOW"
+        }
       }
    }
 }

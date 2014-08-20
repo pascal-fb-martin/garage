@@ -22,23 +22,24 @@ h1 {
 }
 
 .doorname {
-   width: 40%;
+   width: 45%;
    text-align: right;
    font-family: "Metrophobic";
 }
 
 .doorsep {
-   width: 20%;
+   width: 10%;
    font-family: "Metrophobic";
 }
 
 .doorstatus {
-   width: 40%;
+   width: 45%;
    text-align: left;
    font-family: "Metrophobic";
 }
 
 .panelbutton {
+   width: 100%;
    font-weight: 700;
    font-size: 40px;
    text-align: right;
@@ -65,7 +66,7 @@ h1 {
 <script>
 function doorClick () {
    var command = new XMLHttpRequest();
-   command.open("GET", "/pulse/"+this.doorname);
+   command.open("GET", "/pulse/"+this.doorid);
    command.send(null);
 }
 
@@ -97,7 +98,7 @@ function garageInfo () {
             var outer = document.createElement("tr");
             var inner = document.createElement("td");
             var button = document.createElement("button");
-            button.doorname = update[door].name;
+            button.doorid = door;
             button.className = 'panelbutton';
             button.onclick = doorClick;
             button.innerHTML = '<table class="doorrow"><tr><td class=="doorname">'+update[door].name+'</td><td class="doorsep"> </td><td class="doorstatus state-'+door+'">'+update[door].status+'</td></tr></table>';

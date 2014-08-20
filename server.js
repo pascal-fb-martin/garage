@@ -37,6 +37,9 @@ process.argv.forEach(function(val, index, array) {
     if (val == '--debug') {
         options.debug = true;
     }
+    if (val == '--verbose') {
+        options.verbose = true;
+    }
 });
 
 var debugLog = function (text) {}
@@ -82,9 +85,12 @@ process.on('uncaughtException', function(err) {
 
 var garageDoors = new Object();
 
-for (door in config.doors) {
-   garageDoors[door] = new Door(config.doors[door], options);
+function declareDoors () {
+   for (door in config.doors) {
+      garageDoors[door] = new Door(config.doors[door], options);
+   }
 }
+declareDoors();
    
 // ---------------------------------------------------------------------------
 // THE WEB SERVER
@@ -92,9 +98,18 @@ for (door in config.doors) {
 var app = express();
 app.use(staticpages(__dirname+'/public'));
 
+if (options.verbose) {
+   app.use(function(req, res, next){
+      debugLog('received '+req.method+' '+req.url);
+      next();
+   });
+}
+
 // Routes
 
 app.get('/pulse/:door', function(req, res){
+    var door = req.params.door;
+    debugLog ('pulse request for door '+door);
     try {
        garageDoors[door].pulse();
     }
