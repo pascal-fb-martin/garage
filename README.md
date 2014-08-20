@@ -46,7 +46,8 @@ and activate using the Debian's `insserv` command.
 The software is configured through a `config.json` file in dirctory
 `/var/lib/garage`. Here is a example of a configuration with two garage doors:
 
-`{
+```
+{
    "webport": 8080,
    "doors": {
       "main": {
@@ -80,7 +81,8 @@ The software is configured through a `config.json` file in dirctory
         }
       }
    }
-}`
+}
+```
 
 The `webport` item defines the TCP port number used by the web server.
 
