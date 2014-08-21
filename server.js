@@ -69,20 +69,6 @@ catch (err) {
     process.exit(2);
 } 
 
-// Now that the configuration is available, quickly declare
-// a system exception catch-all, so that we can behave predictably
-// before the software exits.
-//
-process.on('uncaughtException', function(err) {
-    errorLog('Caught exception: ' + err.stack);
-    try { door.reset() } catch (err) {}
-    setTimeout(function(){process.exit(1)}, 1000);
-});
-
-// For testing purpose only, do not uncomment otherwise!
-//
-//setTimeout(function(){ thisdoesnotexist(); }, 3000);
-
 var garageDoors = new Object();
 
 function declareDoors () {
@@ -92,6 +78,23 @@ function declareDoors () {
 }
 declareDoors();
    
+
+// Now that the configuration is available, quickly declare
+// a system exception catch-all, so that we can behave predictably
+// before the software exits.
+//
+process.on('uncaughtException', function(err) {
+    errorLog('Caught exception: ' + err.stack);
+    for (door in config.doors) {
+       try { garageDoors[door].reset() } catch (err) {}
+    }
+    setTimeout(function(){process.exit(1)}, 1000);
+});
+
+// For testing purpose only, do not uncomment otherwise!
+//
+//setTimeout(function(){ thisdoesnotexist(); }, 3000);
+
 // ---------------------------------------------------------------------------
 // THE WEB SERVER
 
