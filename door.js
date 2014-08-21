@@ -54,6 +54,7 @@
 //         name          The human readable identifier of the door.
 //         control.pin   The name of the pin that controls that door.
 //         control.on    The active value for the control (default: 1).
+//         control.pulse The duration of the control pulse (default: 500).
 //         open.pin      The name of the pin that reports the "open" state.
 //         open.on       The active value for the "open" state (default: 0).
 //         closed.pin    The name of the pin that reports the "closed" state.
@@ -183,6 +184,12 @@ function Door (config, options) {
    this.open    = configurePin (config.open, 'in');
    this.closed  = configurePin (config.closed, 'in');
 
+   if (config.control.pulse) {
+      this.control.pulse = config.control.pulse;
+   } else {
+      this.control.pulse = 500;
+   }
+
    this.control.open = false;
    this.control.closed = false;
    this.control.pending = false;
@@ -194,13 +201,14 @@ Door.prototype.pulse = function () {
    this.control.closed = this.closed.status;
    this.control.pending = true;
 
+   if (this.debug) {
+      debugLog ('GPIO '+this.control.pin+' pulsed ('+this.control.pulse+'ms)');
+   }
    if (this.control.gpio) {
       this.control.gpio.writeSync(this.control.on);
       setTimeout (function() {
          this.control.gpio.writeSync(this.control.off);
-      }, 2000);
-   } else {
-      if (this.debug) debugLog ('GPIO '+this.control.pin+' pulsed');
+      }, this.control.pulse);
    }
 }
 
@@ -215,8 +223,8 @@ function debounce(input) {
             input.value = value;
             input.status = (input.value == input.on);
          }
-         input.latest = value;
       }
+      input.latest = value;
    }
 }
 

@@ -5,7 +5,8 @@
         "name": "Main Garage Door",
         "control": {
            "pin": "GPIOxx",
-           "on": "HIGH"
+           "on": "HIGH",
+           "pulse": 750
         },
         "open": {
            "pin": "GPIOyy",
@@ -20,7 +21,8 @@
         "name": "Small Garage Door",
         "control": {
            "pin": "GPIOuu",
-           "on": "HIGH"
+           "on": "HIGH",
+           "pulse": 500
         },
         "open": {
            "pin": "GPIOvv",

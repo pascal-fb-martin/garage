@@ -56,7 +56,8 @@ The software is configured through a `config.json` file in directory
         "name": "Main Garage Door",
         "control": {
            "pin": "gpio1",
-           "on": "HIGH"
+           "on": "HIGH",
+           "pulse": 500
         },
         "open": {
            "pin": "gpio2",
@@ -71,7 +72,8 @@ The software is configured through a `config.json` file in directory
         "name": "Small Garage Door",
         "control": {
            "pin": "gpio4",
-           "on": "HIGH"
+           "on": "HIGH",
+           "pulse": 500
         },
         "open": {
            "pin": "gpio5",
@@ -95,4 +97,7 @@ A door description must contain a name and three pin descriptions: `control`,
 `open` and `closed`. Each pin description is a JavaScript object with two
 elements: `pin` (the name of the GPIO pin, as defined on your system) and
 `on` (the value of the pin when active: `HIGH`, i.e. 5V, or `LOW`, i.e. 0V).
+The control object also accepts a `pulse` element. If present, this element
+sets the duration of the control pulse, in milliseconds. If it is not present,
+the software uses a 500ms pulse duration.
 
