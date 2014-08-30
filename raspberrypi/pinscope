@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# Usage: pinscope [pin#..]
+#
+# This script reads the specified pins every seconds.
+# The intent is to test that the control works on a bench.
+#
+# The default for the pin list is: 17 18.
+
+
+INPUTLIST="17 18"
+INPUTCOUNT=2
+
+if [ $# -gt 0 ]
+then
+   INPUTLIST=$*
+   INPUTCOUNT=$#
+fi
+
+for i in $INPUTLIST
+do
+   echo $i > /sys/class/gpio/export
+done
+
+sleep 3
+
+declare -A INPUTLOG
+
+for i in $INPUTLIST
+do
+   echo in > /sys/class/gpio/gpio$i/direction
+   INPUTLOG[gpio$i]=
+done
+
+while :
+do
+   clear
+   echo "= `date` ================================================"
+   for i in $INPUTLIST
+   do
+      LOG=${INPUTLOG[gpio$i]}
+      case `cat /sys/class/gpio/gpio$i/value` in
+      1)
+         LOG="${LOG}+"
+         ;;
+      0)
+         LOG="${LOG}-"
+         ;;
+      esac
+      if [ ${#LOG} -gt 70 ] ; then
+         LOG=${LOG: -70}
+      fi
+      echo "GPIO $i: $LOG"
+      INPUTLOG[gpio$i]=$LOG
+   done
+   sleep 1
+done
+

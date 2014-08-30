@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# Usage: pinpulse [pin#] [pulse] [pause]
+#
+# This script creates a slow positive pulse on the specified output.
+#
+# The parameter pulse defines the duration of the pulse while the parameter
+# pause defines the duration of the pause between two pulses, both in seconds.
+#
+# A pulse is defined as output 1, a pause is defined as output 0. If the
+# actual device is active when output is 0, just adjust pause to the duration
+# of the desired pulse (i.e. swap the pulse and pause values).
+#
+# The intent is to test that a control works on a bench.
+#
+# Do not use if connected to the real device!
+#
+# The default for pin# is 22.
+# The default for pulse is 5 seconds.
+# The default for pause is 5 seconds.
+
+OUTPUTPIN=${1:-22}
+OUTPUTPULSE=${2:-5}
+OUTPUTPAUSE=${3:-5}
+
+echo $OUTPUTPIN > /sys/class/gpio/export
+
+sleep 3
+
+echo out > /sys/class/gpio/gpio$OUTPUTPIN/direction
+
+while :
+do
+  clear
+  echo Pulse ; echo  1 > /sys/class/gpio/gpio$OUTPUTPIN/value
+  sleep $OUTPUTPULSE
+  clear
+  echo Pause ; echo  0 > /sys/class/gpio/gpio$OUTPUTPIN/value
+  sleep $OUTPUTPAUSE
+done
+
