@@ -3,7 +3,7 @@
 # Usage: pinscope [pin#..]
 #
 # This script reads the specified pins every seconds.
-# The intent is to test that the control works on a bench.
+# The intent is to visualize the inputs to test that attached sensors work.
 #
 # The default for the pin list is: 17 18.
 
