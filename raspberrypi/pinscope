@@ -32,10 +32,21 @@ do
    INPUTLOG[gpio$i]=
 done
 
+resetall () {
+   for i in $INPUTLIST
+   do
+      echo $i > /sys/class/gpio/unexport
+   done
+   exit 0
+}
+
+trap resetall sigint
+
 while :
 do
    clear
-   echo "= `date` ================================================"
+   HEADER="= `date` ==========================================================="
+   echo ${HEADER:0:79}
    for i in $INPUTLIST
    do
       LOG=${INPUTLOG[gpio$i]}
