@@ -27,15 +27,17 @@ pins:
 Installing this software requires knowledge of git, Node.js and some Linux
 commands.
 
-The git and Node.js software must be installed beforehand. There is no installer at this time: use git to clone it locally.
+The git and Node.js software must be installed beforehand.
 
 The software depends on the following Node.js module, which much be installed
 using npm:
-* access package (versions 3 or 4). The garage software was tested with access
+* express package (versions 3 or 4). The garage software was tested with access
 version 4.
 * graceful-fs.
-* server-static.
+* serve-static.
 * onoff.
+
+There is no installer for the garage software at this time: use git to clone it locally.
 
 Create directory `/var/lib/garage` (the user account used to run the garage
 software must have read/write/execute access).

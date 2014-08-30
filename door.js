@@ -175,7 +175,7 @@ function Door (config, options) {
       debugLog ('debug mode enabled');
    }
 
-   if ((! gpio) || (! user.production)) {
+   if (! gpio) {
       if (this.debug) debugLog ('using debug GPIO traces');
    }
 
