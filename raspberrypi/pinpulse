@@ -25,16 +25,28 @@ OUTPUTPAUSE=${3:-5}
 
 echo $OUTPUTPIN > /sys/class/gpio/export
 
+resetall () {
+   echo $OUTPUTPIN > /sys/class/gpio/unexport
+   exit 0
+}
+trap resetall sigint
+
 sleep 3
 
 echo out > /sys/class/gpio/gpio$OUTPUTPIN/direction
 
+header () {
+   clear
+   HEADER="= GPIO $OUTPUTPIN == ( $OUTPUTPULSE s / $OUTPUTPAUSE s ) ==========================================================================================="
+   echo ${HEADER:0:79}
+}
+
 while :
 do
-  clear
+  header
   echo Pulse ; echo  1 > /sys/class/gpio/gpio$OUTPUTPIN/value
   sleep $OUTPUTPULSE
-  clear
+  header
   echo Pause ; echo  0 > /sys/class/gpio/gpio$OUTPUTPIN/value
   sleep $OUTPUTPAUSE
 done
