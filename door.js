@@ -205,17 +205,18 @@ Door.prototype.pulse = function () {
       debugLog ('GPIO '+this.control.pin+' pulsed ('+this.control.pulse+'ms)');
    }
    if (this.control.gpio) {
-      this.control.gpio.writeSync(this.control.on);
+      var control = this.control;
+      control.gpio.writeSync(control.on);
       setTimeout (function() {
-         this.control.gpio.writeSync(this.control.off);
-      }, this.control.pulse);
+         control.gpio.writeSync(control.off);
+      }, control.pulse);
    }
 }
 
 function debounce(input) {
 
    if (input.gpio) {
-      var value = imput.gpio.readSync();
+      var value = input.gpio.readSync();
 
       // Handle rebounce by requiring two identical consecutive values.
       if (value != input.value) {
