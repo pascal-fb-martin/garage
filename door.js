@@ -213,6 +213,18 @@ Door.prototype.pulse = function () {
    }
 }
 
+Door.prototype.reset = function () {
+
+   this.control.pending = false;
+
+   if (this.debug) {
+      debugLog ('GPIO '+this.control.pin+' reset');
+   }
+   if (this.control.gpio) {
+      this.control.gpio.writeSync(control.off);
+   }
+}
+
 function debounce(input) {
 
    if (input.gpio) {
