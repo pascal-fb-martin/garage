@@ -133,6 +133,7 @@ function configurePin (io, dir) {
    } else {
       item.on = 0;
       item.off = 1;
+      item.control = false;
    }
    if (io.on != undefined) {
       if (io.on == 'HIGH') {
@@ -144,7 +145,7 @@ function configurePin (io, dir) {
       }
    }
    item.status = false;
-   item.value = item.off;
+   item.value  = item.off;
 
    if (gpio) {
       // Raspbian bug: access to the gpio files is only granted
@@ -181,8 +182,12 @@ function Door (config, options) {
 
    this.name    = config.name;
    this.control = configurePin (config.control, 'out');
-   this.open    = configurePin (config.open, 'in');
-   this.closed  = configurePin (config.closed, 'in');
+   if (config.open) {
+      this.open = configurePin (config.open, 'in');
+   }
+   if (config.closed) {
+      this.closed = configurePin (config.closed, 'in');
+   }
 
    if (config.control.pulse) {
       this.control.pulse = config.control.pulse;
@@ -190,16 +195,20 @@ function Door (config, options) {
       this.control.pulse = 500;
    }
 
-   this.control.open = false;
-   this.control.closed = false;
    this.control.pending = false;
+   this.control.deadline = 0;
 }
 
 Door.prototype.pulse = function () {
 
-   this.control.open = this.open.status;
-   this.control.closed = this.closed.status;
+   if (this.open) {
+      this.open.control = this.open.status;
+   }
+   if (this.closed) {
+      this.closed.control = this.closed.status;
+   }
    this.control.pending = true;
+   this.control.deadline = Date.now() + 3000;
 
    if (this.debug) {
       debugLog ('GPIO '+this.control.pin+' pulsed ('+this.control.pulse+'ms)');
@@ -241,42 +250,108 @@ function debounce(input) {
    }
 }
 
+function completed (input) {
+   if (input) {
+      if (input.status && (!input.control)) {
+         return true;
+      }
+   }
+   return false;
+}
+
+function moved (input) {
+   if (input) {
+      if (input.status != input.control) {
+         return true;
+      }
+   }
+   return false;
+}
+
 Door.prototype.refresh = function () {
 
-   debounce (this.open);
-   debounce (this.closed);
+   if (this.open) {
+      debounce (this.open);
+   }
+   if (this.closed) {
+      debounce (this.closed);
+   }
 
    // Detect when a pending control has been completed.
+   // If we have only one input, we are happy enough if the input indicates
+   // that the door moved (which may not guarantee that the move is over).
+   // If we have no input, just wait for a few seconds.
+   //
    if (this.control.pending) {
-      if (this.open.status || this.closed.status) {
-         if ((this.open.status != this.control.open) ||
-             (this.closed.status != this.control.closed)) {
-            this.controlPending = false;
+      if (this.closed && this.open) {
+         if (completed(this.open) || completed(this.closed)) {
+            this.control.pending = false;
+         }
+      } else if (this.open) {
+         if (moved(this.open)) {
+            this.control.pending = false;
+         }
+      } else if (this.closed) {
+         if (moved(this.closed)) {
+            this.control.pending = false;
+         }
+      } else {
+         if (this.control.deadline < Date.now()) {
+            this.control.pending = false;
          }
       }
    }
 }
 
 Door.prototype.status = function () {
-   var status = "unknown";
 
    if (this.control.pending) {
-      if (this.control.closed) {
-         status = "opening..";
-      } else if (this.control.open) {
-         status = "closing..";
-      } else {
-         status = "moving..";
+      if (this.closed && this.open) {
+         if (this.closed.control) {
+            return "opening..";
+         }
+         if (this.open.control) {
+            return "closing..";
+         }
+         return "moving..";
       }
+      if (this.closed) {
+         if (this.closed.control) {
+            return "opening..";
+         } else {
+            return "closing..";
+         }
+      }
+      if (this.open) {
+         if (this.open.control) {
+            return "closing..";
+         } else {
+            return "opening..";
+         }
+      }
+      return "moving..";
+
    } else {
-      if (this.open.status) {
-        status = "open";
-      } else if (this.closed.status) {
-        status = "closed";
+      if (this.closed && this.open) {
+         if (this.open.status) {
+            status = "open";
+         } else if (this.closed.status) {
+            status = "closed";
+         }
+      }
+      if (this.open) {
+         if (this.open.status) {
+            return "open";
+         }
+      }
+      if (this.closed) {
+         if (this.closed.status) {
+            return "closed";
+         }
       }
    }
 
-   return status;
+   return "unknown";
 }
 
 exports.Door = Door;

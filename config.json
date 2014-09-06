@@ -1,8 +1,8 @@
 {
    "webport": 8080,
    "doors": {
-      "main": {
-        "name": "Main Garage Door",
+      "full": {
+        "name": "Door with full input",
         "control": {
            "pin": "GPIOxx",
            "on": "HIGH",
@@ -17,8 +17,8 @@
            "on": "LOW"
         }
       },
-      "small": {
-        "name": "Small Garage Door",
+      "withopen": {
+        "name": "Door with open input",
         "control": {
            "pin": "GPIOuu",
            "on": "HIGH",
@@ -27,10 +27,26 @@
         "open": {
            "pin": "GPIOvv",
            "on": "LOW"
+        }
+      },
+      "withclosed": {
+        "name": "Door with closed input",
+        "control": {
+           "pin": "GPIOuu",
+           "on": "HIGH",
+           "pulse": 500
         },
         "closed": {
            "pin": "GPIOww",
            "on": "LOW"
+        }
+      },
+      "withnone": {
+        "name": "Door with no input",
+        "control": {
+           "pin": "GPIOuu",
+           "on": "HIGH",
+           "pulse": 500
         }
       }
    }
