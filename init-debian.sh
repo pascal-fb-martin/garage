@@ -20,7 +20,7 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 # Default configuration, can be overwritten in /etc/default/$NAME
 # (These defaults assume a Raspberry Pi running Debian!)
-NODE_JS_HOME=/home/pi/Software/node-v0.10.2-linux-arm-pi 
+NODE_JS_HOME=/home/pi/opt/node-v0.10.28-linux-arm-pi
 GARAGE_USER=pi
 GARAGE_HOME=/home/pi/garage
 
@@ -30,12 +30,10 @@ GARAGE_HOME=/home/pi/garage
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:$NODE_JS_HOME/bin
 DAEMON=$NODE_JS_HOME/bin/node
 DAEMON_ARGS="$GARAGE_HOME/server.js"
-RESET_ARGS="$GARAGE_HOME/reset.js"
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
 [ -r "$DAEMON_ARGS" ] || exit 0
-[ -r "$RESET_ARGS" ] || exit 0
 
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
@@ -81,9 +79,6 @@ do_stop()
 	#   other if a failure occurred
 	start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE
 	RETVAL="$?"
-
-	# Reset all zones now, no matter what.
-	(cd /var/lib/garage ; $DAEMON $RESET_ARGS 2>>/var/lib/garage/errors >>/var/lib/garage/stdout)
 
 	[ "$RETVAL" = 2 ] && return 2
 	# Many daemons don't delete their pidfiles when they exit.

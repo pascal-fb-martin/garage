@@ -79,7 +79,9 @@
 //
 // --------------------------------------------------------------------------
 
-function debugLog (text) {
+function debugLog (text) {}
+
+function debugLogEnabled (text) {
    console.log ('[DEBUG] door: '+text);
 }
 
@@ -121,12 +123,14 @@ function retry(item) {
    }, 200);
 }
 
-function configurePin (io, dir) {
+function configurePin (name, io, dir) {
 
    var item = new Object();
 
+   item.name = name;
    item.pin = io.pin;
    item.dir = dir;
+   debugLog ('   '+name+' is pin '+item.pin+' ('+item.dir+')');
    if (dir == 'out') {
       item.on = 1;
       item.off = 0;
@@ -173,6 +177,7 @@ function Door (config, options) {
    this.debug = false;
    if (options && options.debug) {
       this.debug = true;
+      debugLog = debugLogEnabled;
       debugLog ('debug mode enabled');
    }
 
@@ -180,13 +185,15 @@ function Door (config, options) {
       if (this.debug) debugLog ('using debug GPIO traces');
    }
 
+   debugLog ('Initializing door '+config.name);
+
    this.name    = config.name;
-   this.control = configurePin (config.control, 'out');
+   this.control = configurePin ('control', config.control, 'out');
    if (config.open) {
-      this.open = configurePin (config.open, 'in');
+      this.open = configurePin ('open', config.open, 'in');
    }
    if (config.closed) {
-      this.closed = configurePin (config.closed, 'in');
+      this.closed = configurePin ('closed', config.closed, 'in');
    }
 
    if (config.control.pulse) {
@@ -241,9 +248,12 @@ function debounce(input) {
 
       // Handle rebounce by requiring two identical consecutive values.
       if (value != input.value) {
+         debugLog ('value of '+input.name+' changed from '+input.value+' to '+value);
          if (input.latest == value) {
+            var old = input.status;
             input.value = value;
             input.status = (input.value == input.on);
+            debugLog ('status of '+input.name+' changed from '+old+' to '+input.status);
          }
       }
       input.latest = value;

@@ -9,7 +9,7 @@
 #    GARAGE_HOME   The path to the sprinkler application.
 #
 
-NODE_JS_HOME=/home/pi/Software/node-v0.10.2-linux-arm-pi 
+NODE_JS_HOME=/home/pi/opt/node-v0.10.28-linux-arm-pi
 GARAGE_USER=pi
 GARAGE_HOME=/home/pi/garage
 
