@@ -19,6 +19,7 @@
 // --------------------------------------------------------------------------
 
 var os = require('os');
+var exec = require('child_process').exec
 var fs = require('graceful-fs');
 var express = require('express');
 var staticpages = require('serve-static');
@@ -72,12 +73,19 @@ catch (err) {
 var garageDoors = new Object();
 
 function declareDoors () {
+   var door;
    for (door in config.doors) {
       garageDoors[door] = new Door(config.doors[door], options);
    }
 }
 declareDoors();
-   
+
+function resetDoors() {
+   var door;
+   for (door in config.doors) {
+      try { garageDoors[door].reset() } catch (err) {}
+   }
+}
 
 // Now that the configuration is available, quickly declare
 // a system exception catch-all, so that we can behave predictably
@@ -85,9 +93,7 @@ declareDoors();
 //
 process.on('uncaughtException', function(err) {
     errorLog('Caught exception: ' + err.stack);
-    for (door in config.doors) {
-       try { garageDoors[door].reset() } catch (err) {}
-    }
+    resetDoors();
     setTimeout(function(){process.exit(1)}, 1000);
 });
 
@@ -130,6 +136,19 @@ app.get('/status', function(req, res){
        response[door].status = garageDoors[door].status();
     }
     res.json(response);
+});
+
+app.get('/shutdown', function(req, res){
+    resetDoors();
+    exec ('sudo shutdown -h now', function (error, stdout, stderr) {
+       console.log('stdout: ' + stdout);
+       console.log('stderr: ' + stderr);
+       if (error !== null) {
+          console.log('exec error: ' + error);
+       } else {
+          res.json(500, { status: 'system', msg: 'Shutting down..'});
+       }
+    });
 });
 
 function missingHandler(req, res, next) {
