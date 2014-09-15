@@ -111,7 +111,7 @@ function retry(item) {
    setTimeout (function() {
       cautionLog ('Retrying pin '+item.pin);
       try {
-         item.gpio = new gpio(item.pin, 'out');
+         item.gpio = new gpio(item.pin, item.dir);
          item.ready = true; // No error was raised this time.
          if (item.dir == 'out') {
             item.gpio.writeSync(item.off);

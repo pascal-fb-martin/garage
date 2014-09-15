@@ -1,8 +1,8 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides:          garage
-# Required-Start:    $syslog
-# Required-Stop:     $syslog
+# Required-Start:    $all
+# Required-Stop:     $syslog udev
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: initscript for the garage door control software
@@ -24,16 +24,18 @@ NODE_JS_HOME=/home/pi/opt/node-v0.10.28-linux-arm-pi
 GARAGE_USER=pi
 GARAGE_HOME=/home/pi/garage
 
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:$NODE_JS_HOME/bin
+DAEMON=$NODE_JS_HOME/bin/node
+DAEMON_SCRIPT="$GARAGE_HOME/server.js"
+
+DAEMON_ARGS="$DAEMON_SCRIPT"
+
 # Read configuration variable file if it is present
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
-PATH=/sbin:/usr/sbin:/bin:/usr/bin:$NODE_JS_HOME/bin
-DAEMON=$NODE_JS_HOME/bin/node
-DAEMON_ARGS="$GARAGE_HOME/server.js"
-
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
-[ -r "$DAEMON_ARGS" ] || exit 0
+[ -r "$DAEMON_SCRIPT" ] || exit 0
 
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
