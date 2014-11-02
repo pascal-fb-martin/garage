@@ -1,23 +1,34 @@
 #!/bin/bash
 #
-# Usage: pinpulse [pin#] [pulse] [pause]
-#
-# This script creates a slow positive pulse on the specified output.
-#
-# The parameter pulse defines the duration of the pulse while the parameter
-# pause defines the duration of the pause between two pulses, both in seconds.
-#
-# A pulse is defined as output 1, a pause is defined as output 0. If the
-# actual device is active when output is 0, just adjust pause to the duration
-# of the desired pulse (i.e. swap the pulse and pause values).
-#
-# The intent is to test that a control works on a bench.
-#
-# Do not use if connected to the real device!
-#
-# The default for pin# is 22.
-# The default for pulse is 5 seconds.
-# The default for pause is 5 seconds.
+function pinpulseusage () {
+
+   echo 'Usage: pinpulse [pin#] [pulse] [pause]
+
+   pin#      Number of the GPIO pin (default: 22)
+   pulse     Duration of the pulse (default: 5 seconds)
+   pause     Duration of the pause (default: 5 seconds)
+
+Creates a slow positive pulse on the specified output.
+
+The parameter pulse defines the duration of the pulse while the parameter
+pause defines the duration of the pause between two pulses, both in seconds.
+
+A pulse is defined as output 1, a pause is defined as output 0. If the
+actual device is active when output is 0, just adjust pause to the duration
+of the desired pulse (i.e. swap the pulse and pause values).
+
+The intent is to test that a control works on a bench.
+
+Do not use if connected to the real device!'
+   exit
+}
+
+if [ "X$1" = X-h ] ; then
+   pinpulseusage
+fi
+if [ "X$1" = X--help ] ; then
+   pinpulseusage
+fi
 
 OUTPUTPIN=${1:-22}
 OUTPUTPULSE=${2:-5}

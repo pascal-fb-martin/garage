@@ -1,12 +1,24 @@
 #!/bin/bash
 #
-# Usage: pinscope [pin#..]
-#
-# This script reads the specified pins every seconds.
-# The intent is to visualize the inputs to test that attached sensors work.
-#
-# The default for the pin list is: 17 18.
+function pinscopeusage () {
 
+   echo 'Usage: pinscope [pin#..]
+
+This script reads the specified pins every seconds. The parameter represents
+the GPIO pin number, e.g. 17 for GPIO17.
+
+The intent is to visualize the inputs to test that attached sensors work.
+
+The default for the pin list is: 17 18.'
+   exit
+}
+
+if [ "X$1" = X-h ] ; then
+   pinscopeusage
+fi
+if [ "X$1" = X--help ] ; then
+   pinscopeusage
+fi
 
 INPUTLIST="17 18"
 INPUTCOUNT=2
