@@ -1,6 +1,8 @@
 garage
 ======
 
+(This software is no longer maintained. I use a Ring door detector instead to detect when the garage door is open.)
+
 Garage door control with web user interface (for private network).
 
 _This software is alpha release. It has not yet been fully tested._
